@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Portal</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            margin: 60px auto;
+            gap: 40px;
+            margin-top: -16px;
+        }
+        .discussion-portal, .discussion-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            transition: transform 0.3s ease;
+        }
+        .discussion-portal:hover, .discussion-box:hover {
+            transform: translateY(-5px);
+        }
+        .discussion-portal {
+            max-width: 60%;
+        }
+        .discussion-box {
+            max-width: 40%;
+        }
+        h1, h2 {
+            color: #333;
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #00796b;
+        }
+        button {
+            background-color: #00796b;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #004d40;
+        }
+        .question-list {
+            margin-top: 20px;
+        }
+        .question-item {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        .question-item:hover {
+            background-color: #e3f2fd;
+        }
+        input[type="text"]::placeholder {
+            color: #bbb;
+        }
+        #newQuestionBtn {
+            background-color: #00796b;
+            margin-bottom: 20px;
+        }
+        #questionForm {
+            display: none;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: red;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+        .discussion-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        header {
+    background-color: #2d3a4b;
+    color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+        }
+
+        .logo img {
+            height: 70px; 
+            width: 70px; 
+        }
+
+        .profile-icon img {
+            height: 40px; 
+            cursor: pointer; 
+        }
+
+        h1 {
+            flex: 1; 
+            text-align: center; 
+            
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+        <div class="navbar">
+            <h1>T A L K S P H E R E</h1>
+            <div class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" />
+            </div>
+        </div>
+        <center>
+        <p style="margin-top: -10px;">Ask questions, share thoughts, and resolve discussions</p>
+    </center>
+    </header>
+    <div class="container">
+        <!-- Discussion Portal Section -->
+        <div class="discussion-portal">
+            <h1>Discussion Portal</h1>
+            <button id="newQuestionBtn">New Question Form</button>
+            <input type="text" id="searchInput" placeholder="Search questions...">
+            
+            <div class="question-list" id="questionList">
+                <h2>Recent Discussions</h2>
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Discussion Form Section -->
+        <div class="discussion-box">
+            <h2>Start a Discussion</h2>
+            <form id="discussionForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+        
+                <label for="question">Question:</label>
+                <textarea id="question" name="question" rows="5" required></textarea>
+        
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle the form visibility when the New Question Form button is clicked
+        document.getElementById('newQuestionBtn').addEventListener('click', function() {
+            var questionForm = document.getElementById('discussionForm');
+            questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Handle form submission and add the new discussion to the question list
+        document.getElementById('discussionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let username = document.getElementById('username').value;
+            let subject = document.getElementById('subject').value;
+            let question = document.getElementById('question').value;
+
+            if (username.trim() === "" || subject.trim() === "" || question.trim() === "") {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Create a new question item and append it to the list
+            let questionList = document.getElementById('questionList');
+            let newQuestionItem = document.createElement('div');
+            newQuestionItem.className = 'question-item';
+            newQuestionItem.setAttribute('data-username', username); // Store the creator's username
+
+            newQuestionItem.innerHTML = `
+                <h3>${subject}</h3>
+                <p>${question}</p>
+                <p><small>Posted by: ${username}</small></p>
+                <button class="delete-btn">Delete</button>
+            `;
+
+            questionList.appendChild(newQuestionItem);
+
+            // Attach the delete functionality to the new item
+            newQuestionItem.querySelector('.delete-btn').addEventListener('click', function() {
+                handleDelete(newQuestionItem, username);
+            });
+
+            // Clear the form after submission
+            document.getElementById('username').value = '';
+            document.getElementById('subject').value = '';
+            document.getElementById('question').value = '';
+        });
+
+        // Handle the delete action
+        function handleDelete(questionItem, creator) {
+            let currentUsername = prompt("To delete this post, please enter your username:");
+
+            if (currentUsername === creator) {
+                questionItem.remove();
+                alert("Discussion deleted successfully.");
+            } else {
+                alert("You can only delete your own discussions.");
+            }
+        }
+
+        // Implement search functionality to filter questions by subject or content
+        document.getElementById('searchInput').addEventListener('input', function() {
+            let filter = this.value.toLowerCase();
+            let questions = document.querySelectorAll('.question-item');
+            
+            questions.forEach(function(question) {
+                let subject = question.querySelector('h3').textContent.toLowerCase();
+                let content = question.querySelector('p').textContent.toLowerCase();
+
+                if (subject.includes(filter) || content.includes(filter)) {
+                    question.style.display = 'block';
+                } else {
+                    question.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
